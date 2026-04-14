@@ -1,0 +1,122 @@
+<?php
+/**
+ * Copyright © Panth Infotech. All rights reserved.
+ * Order Attachments — Admin Order View
+ *
+ * @var $block \Panth\OrderAttachments\Block\Adminhtml\Order\View\Attachments
+ * @var $escaper \Magento\Framework\Escaper
+ */
+
+$attachments = $block->getAttachments();
+$hasAttachments = $block->hasAttachments();
+?>
+
+<section class="admin__page-section" id="order-attachments">
+    <div class="admin__page-section-title">
+        <span class="title">
+            <?= $escaper->escapeHtml(__('Order Attachments')) ?>
+            <?php if ($hasAttachments): ?>
+                <span style="display:inline-flex; align-items:center; justify-content:center; background:#4F46E5; color:#fff; font-size:11px; font-weight:700; min-width:20px; height:20px; border-radius:10px; padding:0 6px; margin-left:6px; vertical-align:middle;">
+                    <?= (int) $attachments->getSize() ?>
+                </span>
+            <?php endif; ?>
+        </span>
+    </div>
+    <div class="admin__page-section-content">
+        <?php if ($hasAttachments): ?>
+            <div class="admin__table-wrapper" style="overflow-x:auto;">
+                <style>
+                    #oa-order-table th { background:#f5f5f5 !important; color:#333 !important; font-size:13px !important; font-weight:600 !important; padding:10px 12px !important; text-align:left !important; border-bottom:2px solid #ddd !important; white-space:nowrap; }
+                    #oa-order-table td { padding:10px 12px !important; font-size:13px; border-bottom:1px solid #eee; vertical-align:middle; }
+                </style>
+                <table id="oa-order-table" style="width:100%;border-collapse:collapse;">
+                    <thead>
+                        <tr style="background:#f8f8f8;">
+                            <th style="padding:10px 12px;text-align:left;font-size:13px;font-weight:600;color:#333;border-bottom:2px solid #e0e0e0;">
+                                <?= $escaper->escapeHtml(__('File Name')) ?>
+                            </th>
+                            <th style="padding:10px 12px;text-align:left;font-size:13px;font-weight:600;color:#333;border-bottom:2px solid #e0e0e0;">
+                                <?= $escaper->escapeHtml(__('Product')) ?>
+                            </th>
+                            <th style="padding:10px 12px;text-align:left;font-size:13px;font-weight:600;color:#333;border-bottom:2px solid #e0e0e0;">
+                                <?= $escaper->escapeHtml(__('Size')) ?>
+                            </th>
+                            <th style="padding:10px 12px;text-align:left;font-size:13px;font-weight:600;color:#333;border-bottom:2px solid #e0e0e0;">
+                                <?= $escaper->escapeHtml(__('Type')) ?>
+                            </th>
+                            <th style="padding:10px 12px;text-align:left;font-size:13px;font-weight:600;color:#333;border-bottom:2px solid #e0e0e0;">
+                                <?= $escaper->escapeHtml(__('Uploaded By')) ?>
+                            </th>
+                            <th style="padding:10px 12px;text-align:left;font-size:13px;font-weight:600;color:#333;border-bottom:2px solid #e0e0e0;">
+                                <?= $escaper->escapeHtml(__('Note')) ?>
+                            </th>
+                            <th style="padding:10px 12px;text-align:left;font-size:13px;font-weight:600;color:#333;border-bottom:2px solid #e0e0e0;">
+                                <?= $escaper->escapeHtml(__('Date')) ?>
+                            </th>
+                            <th style="padding:10px 12px;text-align:left;font-size:13px;font-weight:600;color:#333;border-bottom:2px solid #e0e0e0;">
+                                <?= $escaper->escapeHtml(__('Actions')) ?>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($attachments as $attachment): ?>
+                            <tr style="border-bottom:1px solid #eee;">
+                                <td style="padding:10px 12px;">
+                                    <span style="display:inline-flex; align-items:center; gap:6px;">
+                                        <span style="display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; background:#EEF2FF; border-radius:6px;">
+                                            <svg style="width:14px; height:14px; color:#4F46E5;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                        </span>
+                                        <strong style="font-size:13px;"><?= $escaper->escapeHtml($attachment->getOriginalFilename()) ?></strong>
+                                    </span>
+                                </td>
+                                <td style="padding:10px 12px;">
+                                    <?php $productId = $attachment->getProductId(); ?>
+                                    <?php if ($productId): ?>
+                                        <a href="<?= $escaper->escapeUrl($block->getProductEditUrl($productId)) ?>"
+                                           target="_blank" style="color:#4F46E5;text-decoration:none;font-weight:500;font-size:13px;">
+                                            <?= $escaper->escapeHtml($block->getProductName($productId)) ?>
+                                        </a>
+                                    <?php else: ?>
+                                        <span style="color:#D1D5DB;">&mdash;</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td style="padding:10px 12px;font-size:13px;"><?= $escaper->escapeHtml($block->formatFileSize($attachment->getFileSize())) ?></td>
+                                <td style="padding:10px 12px;">
+                                    <span style="display:inline-block; background:#F3F4F6; color:#374151; font-size:11px; font-weight:600; padding:2px 8px; border-radius:4px; text-transform:uppercase;">
+                                        <?= $escaper->escapeHtml($attachment->getFileExtension() ?: $attachment->getMimeType()) ?>
+                                    </span>
+                                </td>
+                                <td style="padding:10px 12px;font-size:13px;"><?= $escaper->escapeHtml($block->getUploadedBy($attachment)) ?></td>
+                                <td style="padding:10px 12px;">
+                                    <?php if ($attachment->getCustomerNote()): ?>
+                                        <span style="font-size:12px; color:#6B7280; max-width:200px; display:inline-block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"
+                                              title="<?= $escaper->escapeHtmlAttr($attachment->getCustomerNote()) ?>">
+                                            <?= $escaper->escapeHtml($attachment->getCustomerNote()) ?>
+                                        </span>
+                                    <?php else: ?>
+                                        <span style="color:#D1D5DB;">&mdash;</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td style="padding:10px 12px;font-size:12px;color:#666;">
+                                    <?= $escaper->escapeHtml($attachment->getCreatedAt()) ?>
+                                </td>
+                                <td style="padding:10px 12px;">
+                                    <a href="<?= $escaper->escapeUrl($block->getDownloadUrl((int) $attachment->getAttachmentId())) ?>"
+                                       class="action-default"
+                                       style="display:inline-flex; align-items:center; gap:4px; color:#4F46E5; font-weight:600; font-size:12px; text-decoration:none;">
+                                        <svg style="width:14px; height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                        <?= $escaper->escapeHtml(__('Download')) ?>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php else: ?>
+            <p style="padding:16px 0; color:#9CA3AF; font-size:13px;">
+                <?= $escaper->escapeHtml(__('No attachments have been uploaded for this order.')) ?>
+            </p>
+        <?php endif; ?>
+    </div>
+</section>

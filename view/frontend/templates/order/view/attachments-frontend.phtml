@@ -1,0 +1,93 @@
+<?php
+/**
+ * Order Attachments — Frontend Order View
+ * @var \Panth\OrderAttachments\Block\Order\View\Attachments $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+if (!$block->hasAttachments()) {
+    return;
+}
+$attachments = $block->getAttachments();
+
+// Group attachments by product
+$grouped = [];
+foreach ($attachments as $attachment) {
+    $pid = (int) $attachment->getData('product_id');
+    $grouped[$pid][] = $attachment;
+}
+?>
+
+<div class="order-attachments" style="margin:2rem 0;">
+    <h2 style="font-size:1.375rem;font-weight:600;margin-bottom:1rem;color:#111;">
+        <?= $escaper->escapeHtml(__('Order Attachments')) ?>
+    </h2>
+
+    <?php foreach ($grouped as $productId => $productAttachments): ?>
+        <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:12px;">
+            <?php if ($productId): ?>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                    <span style="color:#0d9488;font-size:14px;">&#128206;</span>
+                    <a href="<?= $escaper->escapeUrl($block->getProductUrl($productId)) ?>"
+                       style="font-size:14px;font-weight:600;color:#111;text-decoration:none;">
+                        <?= $escaper->escapeHtml($block->getProductName($productId)) ?>
+                    </a>
+                    <span style="font-size:12px;color:#9ca3af;">
+                        (<?= count($productAttachments) ?> <?= count($productAttachments) === 1 ? 'file' : 'files' ?>)
+                    </span>
+                </div>
+            <?php endif; ?>
+
+            <div style="display:flex;flex-wrap:wrap;gap:12px;">
+                <?php foreach ($productAttachments as $attachment): ?>
+                    <?php
+                        $ext = strtolower($attachment->getData('file_extension') ?? '');
+                        $isImage = $block->isImage($ext);
+                        $attachmentId = (int) $attachment->getId();
+                        $filename = $attachment->getData('original_filename');
+                        $note = $attachment->getData('customer_note');
+                        $fileSize = $block->formatFileSize((int) $attachment->getData('file_size'));
+                    ?>
+                    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:10px;width:180px;">
+                        <?php if ($isImage): ?>
+                            <a href="<?= $escaper->escapeUrl($block->getThumbnailUrl($attachmentId)) ?>"
+                               target="_blank"
+                               style="display:block;border-radius:8px;overflow:hidden;margin-bottom:8px;">
+                                <img src="<?= $escaper->escapeUrl($block->getThumbnailUrl($attachmentId)) ?>"
+                                     alt="<?= $escaper->escapeHtmlAttr($filename) ?>"
+                                     loading="lazy"
+                                     style="width:100%;height:120px;object-fit:cover;display:block;" />
+                            </a>
+                        <?php else: ?>
+                            <div style="display:flex;align-items:center;justify-content:center;height:70px;
+                                        background:#f3f4f6;border-radius:8px;margin-bottom:8px;">
+                                <span style="font-size:22px;font-weight:800;color:#9ca3af;">
+                                    <?= $escaper->escapeHtml(strtoupper($ext)) ?>
+                                </span>
+                            </div>
+                        <?php endif; ?>
+
+                        <div style="font-size:12px;color:#374151;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
+                             title="<?= $escaper->escapeHtmlAttr($filename) ?>">
+                            <?= $escaper->escapeHtml($filename) ?>
+                        </div>
+                        <div style="font-size:11px;color:#9ca3af;margin-top:2px;">
+                            <?= $escaper->escapeHtml(strtoupper($ext)) ?> &middot; <?= $escaper->escapeHtml($fileSize) ?>
+                        </div>
+
+                        <?php if ($note): ?>
+                            <div style="font-size:11px;color:#6b7280;margin-top:6px;padding-top:6px;border-top:1px solid #f0f0f0;">
+                                <span style="color:#9ca3af;">Note:</span> <?= $escaper->escapeHtml($note) ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <a href="<?= $escaper->escapeUrl($block->getDownloadUrl($attachmentId)) ?>"
+                           style="display:inline-flex;align-items:center;gap:4px;margin-top:8px;font-size:12px;
+                                  color:#0d9488;font-weight:600;text-decoration:none;">
+                            &#8615; <?= $escaper->escapeHtml(__('Download')) ?>
+                        </a>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    <?php endforeach; ?>
+</div>
