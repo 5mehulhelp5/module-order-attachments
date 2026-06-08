@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright © Panth Infotech. All rights reserved.
- * Order Attachments — Product Page Upload Component
+ * Order Attachments - Product Page Upload Component
  *
  * @var $block \Panth\OrderAttachments\Block\Product\View\Upload
  * @var $escaper \Magento\Framework\Escaper
@@ -312,7 +312,7 @@ function oaUpload_<?= (int)$productId ?>() {
                 }
                 const ext = file.name.split('.').pop().toLowerCase();
                 if (!this.config.allowedExtensions.includes(ext)) {
-                    this.showNotification('"' + file.name + '" — file type not allowed', 'error');
+                    this.showNotification('"' + file.name + '" - file type not allowed', 'error');
                     return;
                 }
                 if (file.size > this.config.maxFileSizeBytes) {
