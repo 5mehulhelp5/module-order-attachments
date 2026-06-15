@@ -22,6 +22,7 @@ use Magento\Store\Model\ScopeInterface;
 use Panth\OrderAttachments\Model\OrderAttachmentFactory;
 use Panth\OrderAttachments\Model\ResourceModel\OrderAttachment as OrderAttachmentResource;
 use Panth\OrderAttachments\Model\ResourceModel\OrderAttachment\CollectionFactory as AttachmentCollectionFactory;
+use Panth\Core\Security\UploadExtensionPolicy;
 use Psr\Log\LoggerInterface;
 
 class Save implements HttpPostActionInterface, CsrfAwareActionInterface
@@ -48,7 +49,8 @@ class Save implements HttpPostActionInterface, CsrfAwareActionInterface
         private readonly OrderAttachmentResource $attachmentResource,
         private readonly AttachmentCollectionFactory $attachmentCollectionFactory,
         private readonly RemoteAddress $remoteAddress,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly UploadExtensionPolicy $uploadExtensionPolicy
     ) {
     }
 
@@ -129,6 +131,12 @@ class Save implements HttpPostActionInterface, CsrfAwareActionInterface
             }
 
             $originalFilename = $fileInfo['name'] ?? 'unknown';
+
+            // Hard executable deny-list — a second gate independent of the
+            // admin-configurable allowlist, so a misconfigured allowed-extensions
+            // field can never permit web-executable uploads (.php/.phtml/.sh/...).
+            $this->uploadExtensionPolicy->assertSafeExtension($originalFilename);
+
             $extension = pathinfo($originalFilename, PATHINFO_EXTENSION);
             $storedFilename = hash('sha256', $originalFilename . microtime(true) . random_int(1000, 9999))
                 . '.' . $extension;

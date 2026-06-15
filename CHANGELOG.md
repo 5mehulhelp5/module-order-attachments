@@ -4,6 +4,17 @@ All notable changes to this extension are documented here. The format
 is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.5] — Upload extension deny-list (defense-in-depth)
+
+### Added
+- `Controller/Upload/Save` now calls `Panth\Core\Security\UploadExtensionPolicy::assertSafeExtension()`
+  before saving, as a hard executable deny-list (`php`, `phtml`, `sh`, `jsp`, …)
+  independent of the admin-configurable allowed-extensions field. Even if an
+  admin typed `php` into that field it can no longer take effect. Requires
+  `mage2kishan/module-core ^1.0.17`. Behaviour for legitimate uploads is
+  unchanged (files are still stored under a random sha256 name and served only
+  via the ownership-gated download controller).
+
 ## [1.0.0] — Initial release
 
 ### Added — product page upload widget
