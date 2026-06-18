@@ -4,6 +4,18 @@ All notable changes to this extension are documented here. The format
 is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.6] - 2026-06-18
+
+### Changed
+- README rewritten to match gold-template structure: Quick Answer block,
+  Who Is It For, Key Features grouped by area, Configuration table sourced
+  directly from system.xml, How It Works, Admin Management, FAQ, Support
+  table with product page link, Quick Links table, and SEO keyword footer.
+- Canonical URL updated to the live product page.
+- Removed unverified claims (panth_quote_attachment table reference, REST API
+  endpoints). Documented only features confirmed in system.xml, db_schema.xml,
+  and controller/block inspection.
+
 ## [1.0.5] — Upload extension deny-list (defense-in-depth)
 
 ### Added
