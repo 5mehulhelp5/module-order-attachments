@@ -25,7 +25,6 @@ class Listing implements HttpGetActionInterface
             return $result->setData(['files' => []]);
         }
 
-        // Return empty for now — files are loaded after add-to-cart via quote_item_id
         return $result->setData(['files' => []]);
     }
 }

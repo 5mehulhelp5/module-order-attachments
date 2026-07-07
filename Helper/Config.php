@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Panth\OrderAttachments\Helper;
@@ -26,9 +25,6 @@ class Config extends AbstractHelper
         );
     }
 
-    /**
-     * @return string[]
-     */
     public function getAllowedExtensions(int|string|null $storeId = null): array
     {
         $value = (string) $this->scopeConfig->getValue(
@@ -44,9 +40,6 @@ class Config extends AbstractHelper
         return array_map('trim', explode(',', $value));
     }
 
-    /**
-     * Returns max file size in MB
-     */
     public function getMaxFileSize(int|string|null $storeId = null): int
     {
         return (int) $this->scopeConfig->getValue(

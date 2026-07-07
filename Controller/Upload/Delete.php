@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Panth\OrderAttachments\Controller\Upload;
@@ -27,25 +26,16 @@ class Delete implements HttpPostActionInterface, CsrfAwareActionInterface
     ) {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function createCsrfValidationException(RequestInterface $request): ?InvalidRequestException
     {
         return null;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function validateForCsrf(RequestInterface $request): ?bool
     {
         return true;
     }
 
-    /**
-     * Execute delete (soft) action
-     */
     public function execute(): \Magento\Framework\Controller\Result\Json
     {
         $result = $this->jsonFactory->create();
@@ -90,17 +80,12 @@ class Delete implements HttpPostActionInterface, CsrfAwareActionInterface
         }
     }
 
-    /**
-     * Validate the current user owns this attachment
-     */
     private function validateOwnership(\Panth\OrderAttachments\Model\OrderAttachment $attachment): void
     {
-        // If attachment has an order_id, it's already placed — don't allow delete
         if ($attachment->getData('order_id')) {
             throw new LocalizedException(__('Cannot delete attachments from placed orders.'));
         }
 
-        // Logged-in customer: check customer_id match
         if ($this->customerSession->isLoggedIn()) {
             $customerId = (int) $this->customerSession->getCustomerId();
             $attachmentCustomerId = $attachment->getData('customer_id') ? (int) $attachment->getData('customer_id') : null;
@@ -109,7 +94,6 @@ class Delete implements HttpPostActionInterface, CsrfAwareActionInterface
             }
         }
 
-        // Guest: allow delete if attachment has no customer_id and no order (pre-checkout)
         if (!$attachment->getData('customer_id') && !$attachment->getData('order_id')) {
             return;
         }

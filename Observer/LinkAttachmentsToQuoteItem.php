@@ -44,7 +44,6 @@ class LinkAttachmentsToQuoteItem implements ObserverInterface
                 }
             }
 
-            // Add filenames as additional_options so they show in cart/checkout/order
             if (!empty($filenames)) {
                 $additionalOptions = [];
                 foreach ($filenames as $i => $filename) {
@@ -54,7 +53,6 @@ class LinkAttachmentsToQuoteItem implements ObserverInterface
                     ];
                 }
 
-                // Merge with existing additional_options
                 $existingOptions = $quoteItem->getOptionByCode('additional_options');
                 if ($existingOptions) {
                     $existing = json_decode($existingOptions->getValue(), true) ?: [];

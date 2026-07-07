@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Panth\OrderAttachments\Model;
@@ -9,19 +8,10 @@ use Panth\OrderAttachments\Model\ResourceModel\OrderAttachment as OrderAttachmen
 
 class OrderAttachment extends AbstractModel
 {
-    /**
-     * @var string
-     */
     protected $_eventPrefix = 'panth_order_attachment';
 
-    /**
-     * @var string
-     */
     protected $_eventObject = 'order_attachment';
 
-    /**
-     * Initialize resource model
-     */
     protected function _construct(): void
     {
         $this->_init(OrderAttachmentResource::class);

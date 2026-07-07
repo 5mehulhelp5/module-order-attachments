@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Panth\OrderAttachments\Setup\Patch\Data;
@@ -23,7 +22,6 @@ class AddAllowOrderAttachmentAttribute implements DataPatchInterface
     {
         $this->moduleDataSetup->getConnection()->startSetup();
 
-        /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
 
         $eavSetup->addAttribute(
@@ -56,17 +54,11 @@ class AddAllowOrderAttachmentAttribute implements DataPatchInterface
         return $this;
     }
 
-    /**
-     * @inheritdoc
-     */
     public static function getDependencies(): array
     {
         return [];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getAliases(): array
     {
         return [];

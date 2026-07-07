@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Panth\OrderAttachments\Observer;
@@ -20,20 +19,15 @@ class CopyAttachmentsToOrder implements ObserverInterface
     ) {
     }
 
-    /**
-     * Copy quote item attachments to order items after order placement
-     */
     public function execute(Observer $observer): void
     {
         try {
-            /** @var Order $order */
             $order = $observer->getEvent()->getData('order');
 
             if (!$order) {
                 return;
             }
 
-            // Build quote_item_id => order_item_id map
             $quoteItemToOrderItem = [];
             foreach ($order->getAllItems() as $orderItem) {
                 $quoteItemId = (int) $orderItem->getQuoteItemId();
@@ -48,7 +42,6 @@ class CopyAttachmentsToOrder implements ObserverInterface
 
             $quoteItemIds = array_keys($quoteItemToOrderItem);
 
-            // Load all active attachments linked to these quote items
             $collection = $this->attachmentCollectionFactory->create();
             $collection->addFieldToFilter('quote_item_id', ['in' => $quoteItemIds]);
             $collection->addFieldToFilter('status', 1);

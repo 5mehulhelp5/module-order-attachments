@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Panth\OrderAttachments\Controller\Adminhtml\Attachment;
@@ -29,9 +28,6 @@ class Download extends Action
         parent::__construct($context);
     }
 
-    /**
-     * Execute admin download action
-     */
     public function execute(): \Magento\Framework\Controller\ResultInterface|\Magento\Framework\App\ResponseInterface
     {
         try {

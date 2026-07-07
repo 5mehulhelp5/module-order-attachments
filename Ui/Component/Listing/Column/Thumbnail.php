@@ -43,7 +43,6 @@ class Thumbnail extends Column
                     $item[$fieldName . '_orig_src'] = $imageUrl;
                     $item[$fieldName . '_link'] = $imageUrl;
                 } else {
-                    // Non-image: show styled file type badge
                     $extUpper = strtoupper(htmlspecialchars($ext));
                     $item[$fieldName . '_src'] = '';
                     $item[$fieldName . '_alt'] = htmlspecialchars($item['original_filename'] ?? '');

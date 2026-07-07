@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Panth\OrderAttachments\Controller\Download;
@@ -34,9 +33,6 @@ class Index implements HttpGetActionInterface
     ) {
     }
 
-    /**
-     * Execute download action
-     */
     public function execute(): \Magento\Framework\Controller\ResultInterface|\Magento\Framework\App\ResponseInterface
     {
         try {
@@ -89,9 +85,6 @@ class Index implements HttpGetActionInterface
         return $redirect->setPath('/');
     }
 
-    /**
-     * Validate customer can access this attachment
-     */
     private function validateAccess(\Panth\OrderAttachments\Model\OrderAttachment $attachment): void
     {
         if (!$this->customerSession->isLoggedIn()) {
@@ -103,12 +96,10 @@ class Index implements HttpGetActionInterface
             ? (int) $attachment->getData('customer_id')
             : null;
 
-        // Check if the customer is the uploader
         if ($attachmentCustomerId !== null && $customerId === $attachmentCustomerId) {
             return;
         }
 
-        // Check if the customer owns the order
         $orderId = $attachment->getData('order_id')
             ? (int) $attachment->getData('order_id')
             : null;
@@ -120,7 +111,6 @@ class Index implements HttpGetActionInterface
                     return;
                 }
             } catch (\Exception $e) {
-                // Order not found, deny access
             }
         }
 

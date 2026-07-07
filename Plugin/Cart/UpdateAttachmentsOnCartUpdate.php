@@ -164,9 +164,6 @@ class UpdateAttachmentsOnCartUpdate
         }
     }
 
-    /**
-     * Hyva: rich HTML (Hyva doesn't strip it)
-     */
     private function buildHyvaHtml(array $attachments, string $note): string
     {
         $count = count($attachments);
@@ -225,9 +222,6 @@ class UpdateAttachmentsOnCartUpdate
         return $html;
     }
 
-    /**
-     * Luma: plain text (Luma escapeHtml strips styles/attributes)
-     */
     private function buildLumaHtml(array $attachments, string $note): string
     {
         $count = count($attachments);

@@ -15,9 +15,6 @@ use Panth\OrderAttachments\Model\OrderAttachmentFactory;
 use Panth\OrderAttachments\Model\ResourceModel\OrderAttachment as AttachmentResource;
 use Psr\Log\LoggerInterface;
 
-/**
- * Serves attachment thumbnails only to authenticated owners
- */
 class View implements HttpGetActionInterface
 {
     public function __construct(
@@ -48,7 +45,6 @@ class View implements HttpGetActionInterface
                 return $this->notFound($result);
             }
 
-            // Ownership verification
             if (!$this->isOwner($attachment)) {
                 return $this->notFound($result);
             }
@@ -76,9 +72,6 @@ class View implements HttpGetActionInterface
         }
     }
 
-    /**
-     * Verify the current user owns this attachment
-     */
     private function isOwner($attachment): bool
     {
         $attachmentCustomerId = $attachment->getData('customer_id')
@@ -88,7 +81,6 @@ class View implements HttpGetActionInterface
             ? (int) $attachment->getData('quote_item_id')
             : null;
 
-        // Check 1: Logged-in customer owns it
         if ($this->customerSession->isLoggedIn()) {
             $sessionCustomerId = (int) $this->customerSession->getCustomerId();
             if ($attachmentCustomerId === $sessionCustomerId) {
@@ -96,7 +88,6 @@ class View implements HttpGetActionInterface
             }
         }
 
-        // Check 2: Attachment is linked to a quote item in the current session's cart
         if ($attachmentQuoteItemId) {
             try {
                 $quote = $this->checkoutSession->getQuote();
@@ -106,15 +97,10 @@ class View implements HttpGetActionInterface
                     }
                 }
             } catch (\Exception $e) {
-                // Quote not available
             }
         }
 
-        // Check 3: Attachment has no quote item yet (just uploaded, not added to cart)
-        // Allow if it belongs to the current session's customer
         if (!$attachmentQuoteItemId && $attachmentCustomerId === null) {
-            // Unlinked attachment with no customer — only allow if it was just uploaded
-            // (created within last 30 minutes as a safety window)
             $createdAt = strtotime($attachment->getData('created_at') ?? '');
             if ($createdAt && (time() - $createdAt) < 1800) {
                 return true;

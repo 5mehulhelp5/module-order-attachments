@@ -1,9 +1,4 @@
 <?php
-/**
- * Copyright © Panth Infotech. All rights reserved.
- * Order Attachments — Product Page Upload Block
- */
-
 declare(strict_types=1);
 
 namespace Panth\OrderAttachments\Block\Product\View;
@@ -29,9 +24,6 @@ class Upload extends Template
         parent::__construct($context, $data);
     }
 
-    /**
-     * Determine whether the upload block should render
-     */
     public function shouldShow(): bool
     {
         if (!$this->config->isEnabled()) {
@@ -43,7 +35,6 @@ class Upload extends Template
             return false;
         }
 
-        // Don't show upload widget for out-of-stock products
         if (!$product->isSaleable()) {
             return false;
         }
@@ -51,11 +42,6 @@ class Upload extends Template
         return (bool) $product->getData('panth_allow_order_attachment');
     }
 
-    /**
-     * Get the current product from the registry
-     *
-     * @return \Magento\Catalog\Model\Product|null
-     */
     public function getProduct()
     {
         if ($this->hasData('product')) {
@@ -64,27 +50,18 @@ class Upload extends Template
         return $this->registry->registry('current_product');
     }
 
-    /**
-     * Get product ID
-     */
     public function getProductId(): ?int
     {
         $product = $this->getProduct();
         return $product ? (int) $product->getId() : null;
     }
 
-    /**
-     * Get quote item ID when editing a cart item (null if adding new)
-     */
     public function getEditQuoteItemId(): ?int
     {
         $id = (int) $this->getRequest()->getParam('id');
         return $id > 0 ? $id : null;
     }
 
-    /**
-     * Get existing attachments for cart edit mode
-     */
     public function getExistingAttachments(): array
     {
         $quoteItemId = $this->getEditQuoteItemId();
@@ -117,9 +94,6 @@ class Upload extends Template
         return $attachments;
     }
 
-    /**
-     * Get customer note from existing attachments (for edit mode)
-     */
     public function getExistingNote(): string
     {
         $quoteItemId = $this->getEditQuoteItemId();
@@ -141,9 +115,6 @@ class Upload extends Template
         return in_array(strtolower($ext ?? ''), ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'], true);
     }
 
-    /**
-     * Get upload configuration as JSON for Alpine.js
-     */
     public function getUploadConfig(): string
     {
         return $this->json->serialize([
@@ -161,57 +132,36 @@ class Upload extends Template
         ]);
     }
 
-    /**
-     * Get configured upload label
-     */
     public function getUploadLabel(): string
     {
         return $this->config->getUploadLabel() ?: 'Attach Files';
     }
 
-    /**
-     * Get allowed extensions as comma-separated string
-     */
     public function getAllowedExtensions(): string
     {
         return implode(', ', array_map('strtoupper', $this->config->getAllowedExtensions()));
     }
 
-    /**
-     * Get max file size in MB
-     */
     public function getMaxFileSize(): int
     {
         return $this->config->getMaxFileSize();
     }
 
-    /**
-     * Get max files per item
-     */
     public function getMaxFiles(): int
     {
         return $this->config->getMaxFilesPerItem();
     }
 
-    /**
-     * Get AJAX upload URL
-     */
     public function getUploadUrl(): string
     {
         return $this->getUrl('orderattachments/upload/save');
     }
 
-    /**
-     * Get AJAX delete URL
-     */
     public function getDeleteUrl(): string
     {
         return $this->getUrl('orderattachments/upload/delete');
     }
 
-    /**
-     * Get AJAX list URL (fetch existing attachments for this product/session)
-     */
     public function getListUrl(): string
     {
         return $this->getUrl('orderattachments/upload/listing');

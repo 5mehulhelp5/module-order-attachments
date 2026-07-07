@@ -92,7 +92,6 @@ class LinkAttachmentsAfterAddToCart
                     ],
                 ];
 
-                // Merge with existing additional_options (non-attachment ones only)
                 $existingOption = $targetItem->getOptionByCode('additional_options');
                 if ($existingOption) {
                     $existing = json_decode($existingOption->getValue(), true) ?: [];
@@ -114,9 +113,6 @@ class LinkAttachmentsAfterAddToCart
         return $result;
     }
 
-    /**
-     * Hyva: rich HTML with thumbnails, popups, styled cards (Hyva doesn't strip HTML)
-     */
     private function buildHyvaHtml(array $attachments, string $note, string $mediaUrl): string
     {
         $count = count($attachments);
@@ -177,9 +173,6 @@ class LinkAttachmentsAfterAddToCart
         return $html;
     }
 
-    /**
-     * Luma: plain text (Luma escapeHtml strips styles/attributes from HTML)
-     */
     private function buildLumaHtml(array $attachments, string $note): string
     {
         $count = count($attachments);

@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Panth\OrderAttachments\Controller\Adminhtml\Attachment;
@@ -19,9 +18,6 @@ class Index extends Action
         parent::__construct($context);
     }
 
-    /**
-     * Execute admin grid page action
-     */
     public function execute(): \Magento\Framework\View\Result\Page
     {
         $resultPage = $this->resultPageFactory->create();

@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Panth\OrderAttachments\Controller\Upload;
@@ -32,7 +31,6 @@ class Save implements HttpPostActionInterface, CsrfAwareActionInterface
     private const XML_PATH_MAX_FILE_SIZE = 'panth_orderattachments/upload/max_file_size';
     private const UPLOAD_DIR = 'panth/order-attachments';
 
-    /** Rate limit: max uploads per IP within the time window */
     private const RATE_LIMIT_MAX_UPLOADS = 20;
     private const RATE_LIMIT_WINDOW_MINUTES = 10;
 
@@ -54,25 +52,16 @@ class Save implements HttpPostActionInterface, CsrfAwareActionInterface
     ) {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function createCsrfValidationException(RequestInterface $request): ?InvalidRequestException
     {
         return null;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function validateForCsrf(RequestInterface $request): ?bool
     {
         return true;
     }
 
-    /**
-     * Execute file upload action
-     */
     public function execute(): \Magento\Framework\Controller\Result\Json
     {
         $result = $this->jsonFactory->create();
@@ -80,17 +69,14 @@ class Save implements HttpPostActionInterface, CsrfAwareActionInterface
         try {
             $this->validateModuleEnabled();
 
-            // Bot protection: honeypot field check
             $honeypot = $this->request->getParam('oa_website_url');
             if (!empty($honeypot)) {
-                // Bot filled the honeypot field - silently reject
                 $this->logger->warning('OrderAttachments: Honeypot triggered', [
                     'ip' => $this->remoteAddress->getRemoteAddress(),
                 ]);
                 throw new LocalizedException(__('Upload validation failed. Please try again.'));
             }
 
-            // Bot protection: rate limiting by IP
             $this->enforceRateLimit();
 
             $productId = (int) $this->request->getParam('product_id');
@@ -132,9 +118,6 @@ class Save implements HttpPostActionInterface, CsrfAwareActionInterface
 
             $originalFilename = $fileInfo['name'] ?? 'unknown';
 
-            // Hard executable deny-list — a second gate independent of the
-            // admin-configurable allowlist, so a misconfigured allowed-extensions
-            // field can never permit web-executable uploads (.php/.phtml/.sh/...).
             $this->uploadExtensionPolicy->assertSafeExtension($originalFilename);
 
             $extension = pathinfo($originalFilename, PATHINFO_EXTENSION);
@@ -200,9 +183,6 @@ class Save implements HttpPostActionInterface, CsrfAwareActionInterface
         }
     }
 
-    /**
-     * Enforce rate limit: max N uploads per IP within a time window
-     */
     private function enforceRateLimit(): void
     {
         $ip = $this->remoteAddress->getRemoteAddress();
@@ -220,7 +200,6 @@ class Save implements HttpPostActionInterface, CsrfAwareActionInterface
                 $cutoff
             );
 
-        // Count recent uploads from this session (use customer_id or session-based check)
         $customerId = $this->customerSession->isLoggedIn()
             ? (int) $this->customerSession->getCustomerId()
             : null;
@@ -228,15 +207,12 @@ class Save implements HttpPostActionInterface, CsrfAwareActionInterface
         if ($customerId) {
             $collection->addFieldToFilter('customer_id', $customerId);
         } else {
-            // For guests, use checkout session quote ID as identifier
             $quoteId = $this->checkoutSession->getQuoteId();
             if ($quoteId) {
-                // Guest rate limit: check by email from quote
                 $email = $this->checkoutSession->getQuote()->getCustomerEmail();
                 if ($email) {
                     $collection->addFieldToFilter('customer_email', $email);
                 } else {
-                    // No identifier available, skip rate limit for this edge case
                     return;
                 }
             } else {
@@ -256,9 +232,6 @@ class Save implements HttpPostActionInterface, CsrfAwareActionInterface
         }
     }
 
-    /**
-     * Validate module is enabled
-     */
     private function validateModuleEnabled(): void
     {
         if (!$this->scopeConfig->isSetFlag(self::XML_PATH_ENABLED, ScopeInterface::SCOPE_STORE)) {
@@ -266,9 +239,6 @@ class Save implements HttpPostActionInterface, CsrfAwareActionInterface
         }
     }
 
-    /**
-     * Validate product allows attachments
-     */
     private function validateProductAllowsAttachment(int $productId): void
     {
         try {
@@ -282,11 +252,6 @@ class Save implements HttpPostActionInterface, CsrfAwareActionInterface
         }
     }
 
-    /**
-     * Get allowed file extensions from config
-     *
-     * @return string[]
-     */
     private function getAllowedExtensions(): array
     {
         $extensions = (string) $this->scopeConfig->getValue(
@@ -297,9 +262,6 @@ class Save implements HttpPostActionInterface, CsrfAwareActionInterface
         return array_map('trim', explode(',', $extensions));
     }
 
-    /**
-     * Get max file size in bytes from config (stored as MB)
-     */
     private function getMaxFileSizeBytes(): int
     {
         $maxMb = (int) $this->scopeConfig->getValue(

@@ -1,9 +1,4 @@
 <?php
-/**
- * Copyright © Panth Infotech. All rights reserved.
- * Order Attachments — Admin Order View Block
- */
-
 declare(strict_types=1);
 
 namespace Panth\OrderAttachments\Block\Adminhtml\Order\View;
@@ -28,21 +23,11 @@ class Attachments extends Template
         parent::__construct($context, $data);
     }
 
-    /**
-     * Get the current order
-     *
-     * @return \Magento\Sales\Model\Order|null
-     */
     public function getOrder()
     {
         return $this->registry->registry('current_order');
     }
 
-    /**
-     * Get attachments collection for this order
-     *
-     * @return \Panth\OrderAttachments\Model\ResourceModel\OrderAttachment\Collection
-     */
     public function getAttachments()
     {
         $order = $this->getOrder();
@@ -58,17 +43,11 @@ class Attachments extends Template
         return $collection;
     }
 
-    /**
-     * Check if order has attachments
-     */
     public function hasAttachments(): bool
     {
         return $this->getAttachments()->getSize() > 0;
     }
 
-    /**
-     * Get download URL for an attachment
-     */
     public function getDownloadUrl(int $attachmentId): string
     {
         return $this->getUrl('orderattachments/attachment/download', [
@@ -76,9 +55,6 @@ class Attachments extends Template
         ]);
     }
 
-    /**
-     * Format file size to human-readable string
-     */
     public function formatFileSize(int $bytes): string
     {
         if ($bytes >= 1048576) {
@@ -90,9 +66,6 @@ class Attachments extends Template
         return $bytes . ' B';
     }
 
-    /**
-     * Get uploaded-by label (customer name/email or "Guest")
-     */
     public function getProductName(int $productId): string
     {
         if (!isset($this->productNameCache[$productId])) {
