@@ -1,4 +1,4 @@
-# Panth Order Attachments — User Guide
+# Panth Order Attachments - User Guide
 
 This guide walks a Magento store administrator through every screen
 and setting of the Panth Order Attachments extension. No coding required.
@@ -45,9 +45,9 @@ bin/magento cache:flush
 
 After installation, these should work:
 
-1. **Configuration page** — Stores > Configuration > Panth Extensions > Order Attachments is reachable
-2. **Admin grid** — Sales > Panth Infotech > Order Attachments is reachable
-3. **Product attribute** — edit any product and look for the "Order Attachments" attribute group
+1. **Configuration page** - Stores > Configuration > Panth Extensions > Order Attachments is reachable
+2. **Admin grid** - Sales > Panth Infotech > Order Attachments is reachable
+3. **Product attribute** - edit any product and look for the "Order Attachments" attribute group
 
 If any of these fail, see [Troubleshooting](#9-troubleshooting).
 

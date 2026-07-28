@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <!--
 /**
- * Hyva PDP layout — Keep block in product.info (theme's product-info.phtml calls getChildHtml for it)
- * No move needed — the theme override already renders it after product-details
+ * Hyva PDP layout - Keep block in product.info (theme's product-info.phtml calls getChildHtml for it)
+ * No move needed - the theme override already renders it after product-details
  */
 -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
